@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5-Drag-Demo by 顽Shi</title>
+  <style>
+    .column {
+      margin-top: 12px;
+      padding: 12px 12px;
+      width: 100%;
+      border: 1px solid #8dc63f;
+      background-color: #484f60;
+      color: #fff;
+      margin-right: 5px;
+      text-align: center;
+      cursor: move;
+    }
+
+    .column.over {
+      border: 3px dashed #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="columns">
+    <div class="column" draggable="true">column 01</div>
+    <div class="column" draggable="true">column 02</div>
+    <div class="column" draggable="true">column 03</div>
+  </div>
+</body>
+<script>
+var columns = document.querySelectorAll('#columns .column');
+var dragEle = null;
+
+columns.forEach(function(item){
+  item.addEventListener('dragstart', dragstart);
+  // item.addEventListener('drag', drag);
+  item.addEventListener('dragenter', dragenter);
+  item.addEventListener('dragover', dragover);
+  item.addEventListener('dragleave', dragleave);
+  item.addEventListener('drop', drop);
+  item.addEventListener('dragend', dragend);
+});
+
+function dragstart(e) {
+  var target = e.target;
+  target.style.opacity = '0.5';
+  dragEle = target;
+
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', target.innerHTML);
+}
+
+// function drag(e) {
+//
+// }
+
+function dragenter(e) {
+  e.target.classList.add('over');
+}
+
+function dragover(e) {
+  e.preventDefault();
+
+  e.dataTransfer.dropEffect = 'move';
+
+  return false;
+}
+
+function dragleave(e) {
+  e.target.classList.remove('over');
+}
+
+function drop(e) {
+  var target = e.target;
+  e.stopPropagation();
+
+  if (dragEle != target) {
+    dragEle.innerHTML = target.innerHTML;
+    target.innerHTML = e.dataTransfer.getData('text/html');
+  }
+  e.target.classList.remove('over');
+  return false;
+}
+
+function dragend(e) {
+  e.target.style.opacity = '1';
+}
+</script>
+</html>
